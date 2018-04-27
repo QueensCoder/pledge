@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>pledge.spec.ch2.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="pledge.spec.ch1.html">
+                  pledge.spec.ch1.js
+                </a>
+              
+                
+                <a class="source" href="pledge.spec.ch2.html">
+                  pledge.spec.ch2.js
+                </a>
+              
+                
+                <a class="source" href="pledge.spec.ch3.html">
+                  pledge.spec.ch3.js
+                </a>
+              
+                
+                <a class="source" href="pledge.spec.ch4.html">
+                  pledge.spec.ch4.js
+                </a>
+              
+                
+                <a class="source" href="pledge.spec.ch5.html">
+                  pledge.spec.ch5.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>pledge.spec.ch2.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-meta">'use strict'</span>;
+describe(<span class="hljs-string">'Chapter 2: Fulfillment Callback Attachment'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+<span class="hljs-comment">/*======================================================
+
+
+                         .d8888b.
+                        d88P  Y88b
+                               888
+                             .d88P
+                         .od888P"
+                        d88P"
+                        888"
+                        888888888
+
+
+Chapter 2: Attaching and Calling Promise Event Handlers
+--------------------------------------------------------*/</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>We are beginning to see how a promise can be manipulated
+through the executor. But what does a promise actually do?
+By completing this chapter, you will learn the fundamentals
+of how promises act on eventual information.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/*========================================================*/</span>
+
+<span class="hljs-comment">/* global $Promise */</span>
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">noop</span> (<span class="hljs-params"></span>) </span>{}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p><code>then</code> is the core of promise behavior. In fact, the P/A+ spec which forms
+the underpinnings of the ES6 spec only covers this method. The <code>then</code>
+function is used to register <em>handlers</em> if and when the promise either
+fulfills or rejects.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+describe(<span class="hljs-string">"A promise's `.then` method"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+
+  <span class="hljs-keyword">var</span> promise, s1, e1, s2, e2;
+  beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    promise = <span class="hljs-keyword">new</span> $<span class="hljs-built_in">Promise</span>(noop);
+    s1 = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"><span class="hljs-regexp">/* data */</span></span>)   </span>{ <span class="hljs-comment">/* use data */</span> };
+    e1 = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"><span class="hljs-regexp">/* reason */</span></span>) </span>{ <span class="hljs-comment">/* handle reason */</span> };
+    s2 = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"><span class="hljs-regexp">/* data */</span></span>)   </span>{ <span class="hljs-comment">/* use data */</span> };
+    e2 = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"><span class="hljs-regexp">/* reason */</span></span>) </span>{ <span class="hljs-comment">/* handle reason */</span> };
+  });
+
+  xit(<span class="hljs-string">'adds groups of handlers (callback functions) to the promise'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    promise.then( s1, e1 );
+    expect( promise._handlerGroups[<span class="hljs-number">0</span>].successCb ).toBe( s1 );
+    expect( promise._handlerGroups[<span class="hljs-number">0</span>].errorCb   ).toBe( e1 );
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>This is calling <code>then</code> on the same promise multiple times, which is NOT
+the same as “chaining.” We’ll deal with promise chaining in Ch. 4.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  xit(<span class="hljs-string">'can be called multiple times to add more handlers'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    promise.then( s1, e1 );
+    expect( promise._handlerGroups[<span class="hljs-number">0</span>].successCb ).toBe( s1 );
+    expect( promise._handlerGroups[<span class="hljs-number">0</span>].errorCb   ).toBe( e1 );
+    promise.then( s2, e2 );
+    expect( promise._handlerGroups[<span class="hljs-number">1</span>].successCb ).toBe( s2 );
+    expect( promise._handlerGroups[<span class="hljs-number">1</span>].errorCb   ).toBe( e2 );
+  });
+
+  xit(<span class="hljs-string">'attaches a falsy value in place of non-function success or error callbacks'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    promise.then( <span class="hljs-string">'a string'</span>, {} );
+    expect( promise._handlerGroups[<span class="hljs-number">0</span>].successCb ).toBeFalsy();
+    expect( promise._handlerGroups[<span class="hljs-number">0</span>].errorCb   ).toBeFalsy();
+  });
+
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Now comes one of the “magic” parts of promises — the way they can trigger
+handlers both when they settle, and also after they have already settled.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+describe(<span class="hljs-string">'A promise'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+
+  <span class="hljs-keyword">var</span> promiseForNum, foo;
+  <span class="hljs-keyword">var</span> setFoo10 = jasmine.createSpy(<span class="hljs-string">'setFoo10'</span>).and.callFake(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    foo = <span class="hljs-number">10</span>;
+  });
+  <span class="hljs-keyword">var</span> addToFoo = jasmine.createSpy(<span class="hljs-string">'addToFoo'</span>).and.callFake(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">num</span>) </span>{
+    foo += num;
+  });
+  beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    promiseForNum = <span class="hljs-keyword">new</span> $<span class="hljs-built_in">Promise</span>(noop);
+    foo = <span class="hljs-number">0</span>;
+    setFoo10.calls.reset();
+    addToFoo.calls.reset();
+  });
+
+  describe(<span class="hljs-string">'that is not yet fulfilled'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+
+    xit(<span class="hljs-string">'does not call any success handlers yet'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForNum.then( setFoo10 );
+      expect( setFoo10 ).not.toHaveBeenCalled();
+    });
+
+  });
+
+  describe(<span class="hljs-string">'that is already fulfilled'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+
+    beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForNum._internalResolve( <span class="hljs-number">25</span> );
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Recommended: add a <code>._callHandlers</code> method to your promise prototype.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+    xit(<span class="hljs-string">'calls a success handler added by `.then`'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForNum.then( setFoo10 );
+      expect( setFoo10 ).toHaveBeenCalled();
+    });
+
+    xit(<span class="hljs-string">"calls a success handler by passing in the promise's value"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForNum.then( addToFoo );
+      expect( addToFoo ).toHaveBeenCalledWith( <span class="hljs-number">25</span> );
+    });
+
+    xit(<span class="hljs-string">'calls each success handler once per attachment'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForNum.then( setFoo10 );
+      promiseForNum.then( addToFoo );
+      promiseForNum.then( addToFoo );
+      expect( setFoo10.calls.count() ).toBe( <span class="hljs-number">1</span> );
+      expect( addToFoo.calls.count() ).toBe( <span class="hljs-number">2</span> );
+      expect( addToFoo ).toHaveBeenCalledWith( <span class="hljs-number">25</span> );
+    });
+
+    xit(<span class="hljs-string">'calls each success handler when added'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForNum.then( setFoo10 );
+      expect( foo ).toBe( <span class="hljs-number">10</span> );
+      promiseForNum.then( addToFoo );
+      expect( foo ).toBe( <span class="hljs-number">35</span> );
+    });
+
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>So we can run callbacks if we already have the value.
+But what if events occur in opposite order?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  describe(<span class="hljs-string">'that already has a success handler'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+
+    xit(<span class="hljs-string">'calls that handler when fulfilled'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForNum.then( setFoo10 );
+      promiseForNum._internalResolve();
+      expect( setFoo10 ).toHaveBeenCalled();
+    });
+
+    xit(<span class="hljs-string">'calls all its success handlers in order one time when fulfilled'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForNum.then( setFoo10 );
+      promiseForNum.then( addToFoo );
+      promiseForNum._internalResolve( <span class="hljs-number">25</span> );
+      expect( foo ).toBe( <span class="hljs-number">35</span> );
+    });
+
+  });
+
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>We’ve just made something nifty. A promise’s <code>.then</code> can attach behavior
+both before &amp; after the promise is actually fulfilled, and we know that the
+actions will run when they can. The <code>.then</code> method can also be called
+multiple times, so you can attach callbacks to run in different parts of
+your code, and they will all run once the promise is fulfilled.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Don’t forget to <code>git commit</code>!</p>
+
+            </div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

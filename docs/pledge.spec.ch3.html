@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>pledge.spec.ch3.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="pledge.spec.ch1.html">
+                  pledge.spec.ch1.js
+                </a>
+              
+                
+                <a class="source" href="pledge.spec.ch2.html">
+                  pledge.spec.ch2.js
+                </a>
+              
+                
+                <a class="source" href="pledge.spec.ch3.html">
+                  pledge.spec.ch3.js
+                </a>
+              
+                
+                <a class="source" href="pledge.spec.ch4.html">
+                  pledge.spec.ch4.js
+                </a>
+              
+                
+                <a class="source" href="pledge.spec.ch5.html">
+                  pledge.spec.ch5.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>pledge.spec.ch3.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-meta">'use strict'</span>;
+describe(<span class="hljs-string">'Chapter 3: Rejection Callback Attachment'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+<span class="hljs-comment">/*=======================================================
+
+
+                         .d8888b.
+                        d88P  Y88b
+                             .d88P
+                            8888"
+                             "Y8b.
+                        888    888
+                        Y88b  d88P
+                         "Y8888P"
+
+
+Chapter 3: Completing the Handlers: Rejection &amp; Catch
+---------------------------------------------------------*/</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>With <code>.resolve</code> sending and <code>.then</code> acting on data, we have
+a major part of promises working. Rejection is similar;
+finish the “callback aggregation” of promises in this chapter.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/*========================================================*/</span>
+
+<span class="hljs-comment">/* global $Promise */</span>
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">noop</span> (<span class="hljs-params"></span>) </span>{}
+
+describe(<span class="hljs-string">'Another promise'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+
+  <span class="hljs-keyword">var</span> promiseForThing, log;
+  <span class="hljs-keyword">var</span> logOops = jasmine.createSpy(<span class="hljs-string">'logOops'</span>).and.callFake(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    log.push({ <span class="hljs-attr">code</span>: <span class="hljs-string">'oops'</span> });
+  });
+  <span class="hljs-keyword">var</span> logInput = jasmine.createSpy(<span class="hljs-string">'logInput'</span>).and.callFake(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">input</span>) </span>{
+    log.push(input);
+  });
+  beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    promiseForThing = <span class="hljs-keyword">new</span> $<span class="hljs-built_in">Promise</span>(noop);
+    log = [];
+    logOops.calls.reset();
+    logInput.calls.reset();
+  });
+
+  describe(<span class="hljs-string">'that is not yet rejected'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+
+    xit(<span class="hljs-string">'does not call error handlers yet'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForThing.then( <span class="hljs-literal">null</span>, logOops );
+      expect( logOops ).not.toHaveBeenCalled();
+    });
+
+  });
+
+  describe(<span class="hljs-string">'that is already rejected'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+
+    <span class="hljs-keyword">var</span> theReason = { <span class="hljs-attr">code</span>: <span class="hljs-string">'timed out'</span> };
+    beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForThing._internalReject( theReason );
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>If you get “not a function” errors, think carefully about
+what happens when you call <code>.then</code>. What is getting added
+to the <code>handlerGroups</code>? What is your code trying to do with
+those <code>handlerGroups</code>? There is going to have to be some
+sort of “safety check” somewhere…</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+    xit(<span class="hljs-string">'does not call any success handlers'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForThing.then( logOops );
+      expect( logOops ).not.toHaveBeenCalled();
+    });
+
+    xit(<span class="hljs-string">'calls an error handler added by `.then`'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForThing.then( <span class="hljs-literal">null</span>, logOops );
+      expect( logOops ).toHaveBeenCalled();
+    });
+
+    xit(<span class="hljs-string">"calls an error handler by passing in the promise's value"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForThing.then( <span class="hljs-literal">null</span>, logInput );
+      expect( logInput ).toHaveBeenCalledWith( theReason );
+    });
+
+    xit(<span class="hljs-string">'calls each error handler once per attachment'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForThing.then( <span class="hljs-literal">null</span>, logOops );
+      promiseForThing.then( <span class="hljs-literal">null</span>, logInput );
+      promiseForThing.then( <span class="hljs-literal">null</span>, logInput );
+      expect( logOops.calls.count() ).toBe( <span class="hljs-number">1</span> );
+      expect( logInput.calls.count() ).toBe( <span class="hljs-number">2</span> );
+      expect( logInput ).toHaveBeenCalledWith( theReason );
+    });
+
+    xit(<span class="hljs-string">'calls each error handler in the order added'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForThing.then( <span class="hljs-literal">null</span>, logOops );
+      promiseForThing.then( <span class="hljs-literal">null</span>, logInput );
+      expect( log ).toEqual( [{ <span class="hljs-attr">code</span>: <span class="hljs-string">'oops'</span>}, {<span class="hljs-attr">code</span>: <span class="hljs-string">'timed out'</span>}] );
+    });
+
+  });
+
+  describe(<span class="hljs-string">'that already has an error handler'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+
+    <span class="hljs-keyword">var</span> theReason = { <span class="hljs-attr">code</span>: <span class="hljs-string">'unauthorized'</span> };
+
+    xit(<span class="hljs-string">'calls that handler when rejected'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForThing.then( <span class="hljs-literal">null</span>, logInput );
+      promiseForThing._internalReject( theReason );
+      expect( logInput ).toHaveBeenCalledWith( theReason );
+    });
+
+    xit(<span class="hljs-string">'calls all its error handlers in order one time when rejected'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForThing.then( <span class="hljs-literal">null</span>, logInput );
+      promiseForThing.then( <span class="hljs-literal">null</span>, logOops );
+      promiseForThing._internalReject( theReason );
+      expect( log ).toEqual( [{<span class="hljs-attr">code</span>: <span class="hljs-string">'unauthorized'</span>}, {<span class="hljs-attr">code</span>: <span class="hljs-string">'oops'</span>}] );
+    });
+
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>This next part is a demonstration; with working resolution and rejection,
+promises can be used as drop-in callback replacements.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  describe(<span class="hljs-string">'with both success and error handlers'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+
+    <span class="hljs-keyword">var</span> ui;
+    beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      ui = {
+        <span class="hljs-attr">animals</span>: [<span class="hljs-string">'kitten'</span>, <span class="hljs-string">'puppy'</span>],
+        <span class="hljs-attr">warning</span>: <span class="hljs-literal">null</span>
+      };
+
+      promiseForThing.then(
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">thingSuccess</span> (<span class="hljs-params">thing</span>) </span>{
+          ui.animals.push( thing.animal );
+        },
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">thingError</span> (<span class="hljs-params">reason</span>) </span>{
+          ui.warning = reason.message;
+        }
+      );
+
+    });
+
+    xit(<span class="hljs-string">'can do stuff with fulfilled data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForThing._internalResolve({ <span class="hljs-attr">animal</span>: <span class="hljs-string">'duckling'</span> });
+      expect( ui.animals[<span class="hljs-number">2</span>] ).toBe( <span class="hljs-string">'duckling'</span> );
+    });
+
+    xit(<span class="hljs-string">'can deal with rejection reasons'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForThing._internalReject({ <span class="hljs-attr">message</span>: <span class="hljs-string">'unauthorized'</span> });
+      expect( ui.warning ).toBe( <span class="hljs-string">'unauthorized'</span> );
+    });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Optional but recommended garbage collection</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+    xit(<span class="hljs-string">'discards handlers that are no longer needed'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+      promiseForThing._internalResolve({ <span class="hljs-attr">animal</span>: <span class="hljs-string">'chipmunk'</span> });
+      expect( promiseForThing._handlerGroups ).toEqual( [] );
+    });
+
+  });
+
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>A quick detour while we are finishing rejections: add a <code>.catch</code> convenience
+method to your promise prototype. The internals of this method can be coded
+as one short line.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+describe(<span class="hljs-string">"A promise's `.catch` method"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+
+  <span class="hljs-keyword">var</span> promise;
+  beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+     promise = <span class="hljs-keyword">new</span> $<span class="hljs-built_in">Promise</span>(noop);
+     spyOn( promise, <span class="hljs-string">'then'</span> ).and.callThrough();
+  });
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">myFunc</span> (<span class="hljs-params">reason</span>) </span>{ <span class="hljs-built_in">console</span>.log(reason); }
+
+  xit(<span class="hljs-string">'attaches the passed-in function as an error handler'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    promise.catch( myFunc );
+    expect( promise.then ).toHaveBeenCalledWith( <span class="hljs-literal">null</span>, myFunc );
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>This spec will probably already pass at this point, because by default all
+functions return <code>undefined</code>. However, as you start Ch. 4, this may fail.
+If that happens, you will have to return here and fix <code>.catch</code> — this
+time, taking the Ch. 4 specs into account.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  xit(<span class="hljs-string">'returns the same kind of thing that .then would'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    <span class="hljs-keyword">var</span> catchReturn = promise.catch( myFunc );
+    <span class="hljs-keyword">var</span> thenReturn = promise.then( <span class="hljs-literal">null</span>, myFunc );
+    [catchReturn, thenReturn].forEach(sanitize);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>should be visually identical (but are not necessarily ===):</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    expect( catchReturn ).toEqual( thenReturn );
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Utility to simplify the return value somewhat. Not always necessary, but
+some valid solutions don’t work with normal <code>toEqual</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sanitize</span> (<span class="hljs-params">val</span>) </span>{
+    <span class="hljs-keyword">if</span> (!val || <span class="hljs-keyword">typeof</span> val !== <span class="hljs-string">'object'</span>) <span class="hljs-keyword">return</span>;
+
+    <span class="hljs-built_in">Object</span>.keys(val)
+    .filter(<span class="hljs-function"><span class="hljs-params">key</span> =&gt;</span> <span class="hljs-keyword">typeof</span> val[key] === <span class="hljs-string">'function'</span>)
+    .forEach(<span class="hljs-function"><span class="hljs-params">key</span> =&gt;</span> {
+      val[key] = (val[key].name.trim() || <span class="hljs-string">'anonymous'</span>) + <span class="hljs-string">' function'</span>;
+    });
+  }
+
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>That finishes the attachment and triggering of our handlers! In the next
+chapter, we will dive deeply into how <code>.then</code> chaining actually works.
+This behavior is what drives promises beyond being just portable callback
+sinks and transforms them into dynamic, versatile, powerful,
+manipulatable machines.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Don’t forget to <code>git commit</code>!</p>
+
+            </div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
